@@ -16,10 +16,10 @@ from models.resunet import ResUnet
 import np_transforms
 import utils
 
-INDIST_EVENT_PATH = './data/indist_events/'
-INDIST_IMAGE_PATH = './data/indist_images/'
-OOD_EVENT_PATH = './data/ood_DIV2K_events/'
-OOD_IMAGE_PATH = './data/ood_DIV2K_images/'
+INDIST_EVENT_PATH = "/content/drive/My Drive/noise2image/indist_events/"
+INDIST_IMAGE_PATH = "/content/drive/My Drive/noise2image/indist_images/"
+OOD_EVENT_PATH = "/content/drive/My Drive/noise2image/ood_DIV2K_events/"
+OOD_IMAGE_PATH = "/content/drive/My Drive/noise2image/ood_DIV2K_images/"
 
 parser = ArgumentParser()
 parser.add_argument("--gpu_ind", type=int, default=0, help="GPU index")
