@@ -66,7 +66,7 @@ class EventNoiseCount(object):
         self.varying_eps = varying_eps
         self.poission_sample = poisson_sample  # by default sample from negative binomial
 
-        with np.load('lux_measurement.npz') as data:
+        with np.load('/content/noise2imageClone/lux_measurement.npz') as data:
             list_lux_close = data['list_lux_close']
             list_lux_far = data['list_lux_far']
             list_intensity = data['list_intensity']
@@ -76,7 +76,7 @@ class EventNoiseCount(object):
         self.illuminance_level_far = self.reg_far.predict((np.arange(256) ** 2.2).reshape(-1, 1))
         self.illuminance_level = self.illuminance_level / np.max(self.illuminance_level) * np.max(self.illuminance_level_far)
 
-        with np.load('synthetic_param.npz') as f:
+        with np.load('/content/noise2imageClonesynthetic_param.npz') as f:
             self.negative_binomial_r_pos = f['r_pos']
             self.negative_binomial_r_neg = f['r_neg']
         self.rng = np.random.default_rng(seed=int(torch.randint(2**32, (1,))))
