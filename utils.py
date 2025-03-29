@@ -347,7 +347,7 @@ def data_split(dataset, validation_split=0.1, testing_split=0.2, seed=42):
 
 
 def calibrate_distortion(calib_img):
-    gt_img = cv2.resize(cv2.imread('/content/noise2image/calibration.png'), (1280, 720))
+    gt_img = cv2.resize(cv2.imread('/content/noise2imageClone/calibration.png'), (1280, 720))
     gt_img = cv2.cvtColor(gt_img, cv2.COLOR_BGR2GRAY)
 
     checker_size = (37, 20)
