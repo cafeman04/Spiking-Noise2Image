@@ -17,10 +17,10 @@ import utils
 
 torch.set_float32_matmul_precision('medium')
 
-INDIST_EVENT_PATH = './data/indist_events/'
-INDIST_IMAGE_PATH = './data/indist_images/'
-OOD_EVENT_PATH = './data/ood_DIV2K_events/'
-OOD_IMAGE_PATH = './data/ood_DIV2K_images/'
+INDIST_EVENT_PATH = "/content/drive/MyDrive/Noise2ImageData/indist_events/"
+INDIST_IMAGE_PATH = "/content/drive/MyDrive/Noise2ImageData/indist_images/"
+OOD_EVENT_PATH = "/content/drive/MyDrive/Noise2ImageData/ood_DIV2K_events/"
+OOD_IMAGE_PATH = "/content/drive/MyDrive/Noise2ImageData/ood_DIV2K_images/"
 
 parser = ArgumentParser()
 parser.add_argument("--gpu_ind", type=int, default=0, help="GPU index")
