@@ -76,7 +76,7 @@ class EventNoiseCount(object):
         self.illuminance_level_far = self.reg_far.predict((np.arange(256) ** 2.2).reshape(-1, 1))
         self.illuminance_level = self.illuminance_level / np.max(self.illuminance_level) * np.max(self.illuminance_level_far)
 
-        with np.load('/content/noise2imageClonesynthetic_param.npz') as f:
+        with np.load('/content/noise2imageClone/synthetic_param.npz') as f:
             self.negative_binomial_r_pos = f['r_pos']
             self.negative_binomial_r_neg = f['r_neg']
         self.rng = np.random.default_rng(seed=int(torch.randint(2**32, (1,))))
@@ -105,8 +105,25 @@ class EventNoiseCount(object):
             count_pos = self.rng.poisson((p_pos * self.num_time))
             count_neg = self.rng.poisson((p_neg * self.num_time))
         else:
-            count_pos = self.rng.negative_binomial(r_pos, r_pos / (p_pos * self.num_time + r_neg))
-            count_neg = self.rng.negative_binomial(r_neg, r_neg / (p_neg * self.num_time + r_neg))
+            epsilon = 1e-10
+
+            p_pos_safe = np.clip(p_pos, epsilon, 1.0-epsilon)
+
+            p_pos_safe = np.nan_to_num(p_pos_safe, nan=epsilon)
+
+            prob_param = r_pos / (p_pos_safe * self.num_time + r_neg + epsilon)
+
+            prob_param = np.clip(prob_param, epsilon, 1.0-epsilon)
+
+            count_pos = self.rng.negative_binomial(r_pos, prob_param)
+
+
+            p_neg_safe = np.clip(p_neg, epsilon, 1.0-epsilon)
+            p_neg_safe = np.nan_to_num(p_neg_safe, nan=epsilon)
+            prob_param_neg = r_neg / (p_neg_safe * self.num_time + r_neg + epsilon)
+            prob_param_neg = np.clip(prob_param_neg, epsilon, 1.0-epsilon)
+            count_neg = self.rng.negative_binomial(r_neg, prob_param_neg)
+
 
         if self.constant_noise_neg > 0:
             noise_neg = self.constant_noise_neg
