@@ -1,18 +1,18 @@
 import torch.nn as nn
 import torch
-
+import snntorch as snn
 
 class ResBlock(nn.Module):
     def __init__(self, cin, cout, stride, kernel_size=3):
         super().__init__()
         self.block = nn.Sequential(
             nn.BatchNorm2d(cin),
-            nn.ReLU(),
+            snn.Leaky(beta=0.95),
             nn.Conv2d(
                 cin, cout, kernel_size=kernel_size, stride=stride, padding=kernel_size//2
             ),
             nn.BatchNorm2d(cout),
-            nn.ReLU(),
+            snn.Leaky(beta=0.95),
             nn.Conv2d(cout, cout, kernel_size=kernel_size, padding=kernel_size//2),
         )
         self.res = nn.Sequential(
@@ -35,7 +35,7 @@ class ResUnet(nn.Module):
         self.input_layer = nn.Sequential(
             nn.Conv2d(in_channels=in_channels, out_channels=c, kernel_size=3, padding=1),
             nn.BatchNorm2d(c),
-            nn.ReLU(),
+            snn.Leaky(beta=0.95),
             nn.Conv2d(c, c, kernel_size=3, padding=1),
         )
         self.input_skip = nn.Sequential(
@@ -58,8 +58,11 @@ class ResUnet(nn.Module):
         )
 
     def forward(self, x, time):
+      mem = 0
+      for time_step in range(time):
         # Encode
-        x1 = self.input_layer(x) + self.input_skip(x)
+        xt = x[:,time_step,:,:]
+        x1 = self.input_layer(xt) + self.input_skip(xt)
         x2 = self.residual_conv_1(x1)
         x3 = self.residual_conv_2(x2)
         # Bridge
@@ -85,4 +88,5 @@ class ResUnet(nn.Module):
         # x13 = TF.resize(x12, (1080, 1920), antialias=True)  # interpolation
 
         output = self.output_layer(x10)
-        return output
+        mem += output
+      return mem / time
