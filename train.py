@@ -140,7 +140,7 @@ class Model(l.LightningModule):
         return loss
 
     def predict_step(self, batch, batch_idx=None):
-        t_from_batch_default = self.hparams.snn_num_steps if isinstance(self.model, BeginnerSNNResUnet) else 1
+        t_from_batch_default = self.hparams.snn_num_steps if isinstance(self.model, SNNResUnet) else 1
         
         if isinstance(batch, (list, tuple)):
             if len(batch) == 3: 
